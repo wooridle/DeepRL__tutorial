@@ -16,6 +16,8 @@ cd source_code/cartpole_dqn
 python cartpole_dqn.py
 ```
 
+#### 아래 만약 cartpole_dqn.py가 성공적으로 실행되셨으면 아래 설치가이드는 생략하셔도 됩니다!
+--------------------------------
 
 ## 운영체제별 설치 가이드
 
