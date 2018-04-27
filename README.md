@@ -8,7 +8,19 @@
 pip install -r requirements.txt
 ```
 
+## 설치 상태확인
+
+패키지 설치 후 source_code 디렉토리에 있는 cartpole_dqn.py 실행시키시고 Openai gym cartpole이 렌더링되면 됩니다.
+```
+cd source_code/cartpole_dqn
+python cartpole_dqn.py
+```
+
+#### 아래 만약 cartpole_dqn.py가 성공적으로 실행되셨으면 아래 설치가이드는 생략하셔도 됩니다!
+--------------------------------
+
 ## 운영체제별 설치 가이드
+### ※cartpole_dqn.py 실행 성공하셨으면 이 부분은 생략해주세요.※
 
 다음 세가지의 설치 환경을 설명합니다.
 
