@@ -145,31 +145,3 @@ for _ in range(1000):
 
 
    <p align="center"><img src="./install_image/cartpole_exam.png" style="zoom:80%"></p>
-
-
-
-### 1.4.2 아타리 브레이크아웃
-
-위에서 오픈에이아이를 전체 설치 했기 때문에 아타리 브레이크 아웃 예제를 테스트 해볼 수 있습니다.
-
-브레이크 아웃을 테스트 하기 위한 테스트는 rlcode 깃헙 레포지토리에 있는 ``3-atari/1-breakout/breakout_dqn.py`` 예제를 사용하겠습니다. 
-
-우선 해당 파이썬 코드가 있는 디렉토리로 이동합니다.
-
-```shell
-$cd 3-atari/1-breakout
-```
-
-``breakout_dqn.py`` 코드는 카트폴 테스트 예제에 비해  코드량이 많으므로 전체는 생략하겠습니다.
-
-다음 명령어로 ``breakout_dqn.py`` 를 실행합니다.
-
-```shell
-$python breakout_dqn.py
-```
-
-dqn알고리즘을 실행하기 때문에 컴퓨터 사양에 따라 렌더링되는 시간이 다를 수 있습니다.
-
-아래 그림은 실행화면 입니다.
-
-  <p align="center"><img src="./install_image/atari_breakout.png" style="zoom:80%"></p>
