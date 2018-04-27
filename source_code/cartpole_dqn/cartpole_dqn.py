@@ -40,9 +40,13 @@ def replay_train(mainDQN: dqn.DQN, targetDQN: dqn.DQN, train_batch: list) -> flo
 
     X = states
 
+    # target(정답) 
     Q_target = rewards + DISCOUNT_RATE * np.max(targetDQN.predict(next_states), axis=1) * ~done
 
+    # prediction(예측)
+    # states를 넣어준 이유 : states가 reshape되기 때문에 states를 넣어줌 
     y = mainDQN.predict(states)
+    # 실제 취한 액션에 대한 큐함수를 target으로 업데이트 
     y[np.arange(len(X)), actions] = Q_target
 
     # Train our network using target and predicted Q values on each episode
@@ -59,13 +63,14 @@ def get_copy_var_ops(*, dest_scope_name: str, src_scope_name: str) -> List[tf.Op
     """
     # Copy variables src_scope to dest_scope
     op_holder = []
-
+    # 그래프에서 해당 Scope의 Variable을 가져오는 것
     src_vars = tf.get_collection(
         tf.GraphKeys.TRAINABLE_VARIABLES, scope=src_scope_name)
     dest_vars = tf.get_collection(
         tf.GraphKeys.TRAINABLE_VARIABLES, scope=dest_scope_name)
 
     for src_var, dest_var in zip(src_vars, dest_vars):
+        # main 의 weight를 Target의 weight로 업데이트하는 operation을 op_holder리스트에 저장 
         op_holder.append(dest_var.assign(src_var.value()))
 
     return op_holder
@@ -106,9 +111,12 @@ def main():
         # initial copy q_net -> target_net
         copy_ops = get_copy_var_ops(dest_scope_name="target",
                                     src_scope_name="main")
+        # 업데이트 operation을 Run
         sess.run(copy_ops)
 
         for episode in range(MAX_EPISODES):
+            
+            # epsilon decay : 10번 1/2 , 20번 1/3 ... 
             e = 1. / ((episode / 10) + 1)
             score = 0
             done = False
@@ -116,6 +124,8 @@ def main():
             state = env.reset()
 
             while not done:
+                env.render()
+
                 if np.random.rand() < e:
                     action = env.action_space.sample()
                 else:
@@ -135,22 +145,25 @@ def main():
                     minibatch = random.sample(replay_buffer, BATCH_SIZE)
                     loss, _ = replay_train(mainDQN, targetDQN, minibatch)
 
+                # 5번 마다 target을 main으로 업데이트
                 if step_count % TARGET_UPDATE_FREQUENCY == 0:
                     sess.run(copy_ops)
                 score += reward
                 state = next_state
                 step_count += 1
 
-            print("Episode: {}  steps: {} reward: {}".format(episode, step_count, score))
+            print("Episode: {} steps: {} reward: {}".format(episode, step_count, score))
 
             # CartPole-v0 Game Clear Checking Logic
-            last_100_game_reward.append(step_count)
+            # 카트폴은 1step에 1점을 받으므로 reward 저장
+            last_100_game_reward.append(score)
 
+            # 최근 100개의 reward의 average reward를 구한다. 
             if len(last_100_game_reward) == last_100_game_reward.maxlen:
                 avg_reward = np.mean(last_100_game_reward)
 
                 if avg_reward > 199:
-                    print(f"Game Cleared in {episode} episodes with avg reward {avg_reward}")
+                    print("Game Cleared in {episode} episodes with avg reward {avg_reward}")
                     break
 
 

@@ -37,16 +37,19 @@ class DQN:
             l_rate (float, optional): Learning rate
         """
         with tf.variable_scope(self.net_name):
+            # _X : state (환경의 state)
             self._X = tf.placeholder(tf.float32, [None, self.input_size], name="input_x")
             net = self._X
 
             net = tf.layers.dense(net, h_size, activation=tf.nn.relu)
             net = tf.layers.dense(net, self.output_size)
+            # 각 action에 대한 큐함수 predict
             self._Qpred = net
 
+            # target 큐함수 
             self._Y = tf.placeholder(tf.float32, shape=[None, self.output_size])
             self._loss = tf.losses.mean_squared_error(self._Y, self._Qpred)
-
+        
             optimizer = tf.train.AdamOptimizer(learning_rate=l_rate)
             self._train = optimizer.minimize(self._loss)
 
@@ -57,6 +60,7 @@ class DQN:
         Returns:
             np.ndarray: Q value array, shape (n, output_dim)
         """
+        # batch size에 따라 들어오는 state의 수가 달라지므로 reshape을 한다.
         x = np.reshape(state, [-1, self.input_size])
         return self.session.run(self._Qpred, feed_dict={self._X: x})
 
@@ -72,4 +76,5 @@ class DQN:
             self._X: x_stack,
             self._Y: y_stack
         }
+        # feed에 state(X)와 Target(Y)에 loss(출력용도) train operation 실행
         return self.session.run([self._loss, self._train], feed)
