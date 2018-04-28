@@ -5,7 +5,7 @@
 ## Requirements
 
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ## 설치 상태확인
